@@ -1,0 +1,10 @@
+.settings
+.cproject
+.project
+*.bak
+*.*bak
+*backup*
+*rescue*
+*cache*
+
+
