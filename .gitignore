@@ -1,4 +1,6 @@
-.settings
+/Debug
+/Release
+/build.settings
 .cproject
 .project
 *.bak
