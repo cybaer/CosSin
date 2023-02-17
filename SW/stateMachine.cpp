@@ -17,7 +17,6 @@
       context.setState(Run45State::getInstance());
     }
 
-
     void Run33State::onEntry(Ui& context) const
     {
       context.setRPM33();

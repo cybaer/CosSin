@@ -25,12 +25,16 @@ public:
   {}
   void xcrementPhase()
   {}
-  void setGeneratorData(GeneratorData* data) { m_Data = data; }
+  void setGeneratorData(GeneratorData* data) 
+  { 
+    m_Data = data; 
+    m_PhaseAccumulator = 0; /// ToDo: morph to target freq
+  }
 
   // --- ISR context --- start
   void calcNewPhase()
   {
-    m_PhaseAccumulator += m_PhaseStep;
+    m_PhaseAccumulator += m_Data->m_FrequencySetting;// m_PhaseStep;
   }
   uint8_t getValueA()
   {
@@ -46,7 +50,7 @@ public:
   // --- ISR context end ---
   static uint32_t getFreqSetting(uint32_t freq_100times) { return freq_100times * (0xFFFFFFFF/36231l) / 100; }
 private:
-  uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/36231l) -00; //118544 => 1Hz
+  uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/36231l); //118544 => 1Hz
   uint32_t m_PhaseAccumulator = 0x00000000;
   uint32_t m_PhaseOffsetChB = 0x80000000; // for 180 degrees;
      
