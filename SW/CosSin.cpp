@@ -24,7 +24,6 @@
 #include "avrlib/gpio.h"
 #include "avrlib/adc.h"
 
-#include "sineTable.h"
 #include "generator.h"
 #include "HardwareConfig.h"
 #include "ui.h"
@@ -71,8 +70,6 @@ ISR(TIMER1_COMPA_vect)
 
 int main(void)
 {
-  
-
   PIN_PWM_TIMER2A::set_mode(DIGITAL_OUTPUT); 
   PIN_PWM_TIMER2B::set_mode(DIGITAL_OUTPUT); 
   //PIN_MUTE::set_mode(DIGITAL_OUTPUT);

@@ -1,41 +1,32 @@
 #ifndef STATEMACHINE_H_
 #define STATEMACHINE_H_
 
-class Context;
+class Ui;
 
 class IState
 {
   public:
     IState(void) {}
-    virtual void onEntry(Context&) const {}
-    virtual void onExit(Context&) const {}
-    virtual void onPush33(Context&) const {}
-    virtual void onPush45(Context&) const {}
-    virtual void onPushEncoder(Context&) const {}
-    virtual void onIncrement(Context&, int8_t incr) const {}
-};
-
-
-class Context
-{
-public:
-  Context(IState& state)
-  : m_State(&state)
-  {}
-
-  void setState(IState& state)
-  {
-    m_State->onExit(*this);
-    m_State = &state;
-    m_State->onEntry(*this);
-  }
-
-  IState* m_State;
+    virtual void onEntry(Ui&) const {}
+    virtual void onExit(Ui&) const {}
+    virtual void onPush33(Ui&) const {}
+    virtual void onPush45(Ui&) const {}
+    virtual void onPushEncoder(Ui&) const {}
+    virtual void onIncrement(Ui&, int8_t incr) const {}
 };
 
   /**
    * State machine
    */
+class InitState: public IState
+{
+  public:
+    static InitState& getInstance(void)
+    {
+      static InitState s_instance;
+      return s_instance;
+    }
+};  
 class OffState: public IState
 {
   public:
@@ -44,9 +35,9 @@ class OffState: public IState
       static OffState s_instance;
       return s_instance;
     }
-    void onEntry(Context& context) const;
-    void onPush33(Context& context) const;
-    void onPush45(Context& context) const;
+    void onEntry(Ui& context) const;
+    void onPush33(Ui& context) const;
+    void onPush45(Ui& context) const;
 };
 
 class Run33State: public IState
@@ -57,10 +48,10 @@ class Run33State: public IState
       static Run33State s_instance;
       return s_instance;
     }
-    void onEntry(Context& context) const;
-    void onExit(Context& context) const;
-    void onPush33(Context& context) const;
-    void onPush45(Context& context) const;
+    void onEntry(Ui& context) const;
+    void onExit(Ui& context) const;
+    void onPush33(Ui& context) const;
+    void onPush45(Ui& context) const;
 };
 
 class Run45State: public IState
@@ -71,10 +62,10 @@ class Run45State: public IState
       static Run45State s_instance;
       return s_instance;
     }
-    void onEntry(Context& context) const;
-    void onExit(Context& context) const;
-    void onPush33(Context& context) const;
-    void onPush45(Context& context) const;
+    void onEntry(Ui& context) const;
+    void onExit(Ui& context) const;
+    void onPush33(Ui& context) const;
+    void onPush45(Ui& context) const;
     
 };
 
