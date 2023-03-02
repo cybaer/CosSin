@@ -40,7 +40,19 @@ class OffState: public IState
     void onPush45(Ui& context) const;
 };
 
-class Run33State: public IState
+class RunState: public IState
+{
+  public:
+    static RunState& getInstance(void)
+    {
+      static RunState s_instance;
+      return s_instance;
+    }
+    void onPushEncoder(Ui& context) const;
+};
+
+
+class Run33State: public RunState
 {
   public:
     static Run33State& getInstance(void)
@@ -54,7 +66,7 @@ class Run33State: public IState
     void onPush45(Ui& context) const;
 };
 
-class Run45State: public IState
+class Run45State: public RunState
 {
   public:
     static Run45State& getInstance(void)
@@ -67,6 +79,35 @@ class Run45State: public IState
     void onPush33(Ui& context) const;
     void onPush45(Ui& context) const;
     
+};
+
+
+class ChangeFreqState: public IState
+{
+  public:
+    static ChangeFreqState& getInstance(void)
+    {
+      static ChangeFreqState s_instance;
+      return s_instance;
+    }
+    void onEntry(Ui& context) const;
+    void onExit(Ui& context) const;
+    void onPushEncoder(Ui& context) const;
+    void onIncrement(Ui& context, int8_t incr) const;
+};
+
+class ChangePhaseState: public IState
+{
+  public:
+    static ChangePhaseState& getInstance(void)
+    {
+      static ChangePhaseState s_instance;
+      return s_instance;
+    }
+    void onEntry(Ui& context) const;
+    void onExit(Ui& context) const;
+    void onPushEncoder(Ui& context) const;
+    void onIncrement(Ui& context, int8_t incr) const;
 };
 
 #endif

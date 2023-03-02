@@ -4,8 +4,9 @@
 
 #include "sineTable.h"
 
-static const uint32_t Degree_180 = 0x80000000;
-static const uint32_t OneDegree = Degree_180 / 180l;
+static const uint32_t Step = 36231l;
+static const uint32_t Degree_90 = 0x40000000;
+static const uint32_t OneDegree = Degree_90 / 90l;
 
 struct GeneratorData
 {
@@ -43,16 +44,17 @@ public:
   }
   uint8_t getValueB()
   {
-    uint32_t accuB = m_PhaseAccumulator + m_PhaseOffsetChB;
+    uint32_t accuB = m_PhaseAccumulator + m_Data->m_PhaseSetting; //m_PhaseOffsetChB;
     uint8_t address_pointer = accuB >> 24;
     return pgm_read_byte(&SINE_256V_8B[address_pointer]);
   }
   // --- ISR context end ---
-  static uint32_t getFreqSetting(uint32_t freq_100times) { return freq_100times * (0xFFFFFFFF/36231l) / 100; }
+  static uint32_t getFreqSetting(uint32_t freq_100times) { return freq_100times * (0xFFFFFFFF/Step) / 100; }
+  static uint32_t get1Hz() { return 0xFFFFFFFF/Step; }
 private:
-  uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/36231l); //118544 => 1Hz
+  uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/Step); //118544 => 1Hz
   uint32_t m_PhaseAccumulator = 0x00000000;
-  uint32_t m_PhaseOffsetChB = 0x80000000; // for 180 degrees;
+  uint32_t m_PhaseOffsetChB = 0x40000000; // for 90 degrees;
      
   GeneratorData* m_Data;
 };
