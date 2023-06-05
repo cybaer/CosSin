@@ -16,6 +16,7 @@ MCU_NAME       = 328
 F_CPU          = 20000000
 TARGET         = CosSin
 PACKAGES       = avrlib avrlib/devices ./
+PROGRAMMER_PORT= /dev/ttyACM0
 
 #INC=$(/home/cybaer/git/derMehrschritt/Adafruit_GFX_Library/)
 #INC_PARAMS= -IAdafruit_GFX_Library/
