@@ -57,14 +57,14 @@ Ui ui;
    for the PWM from the table and outputs it */
 ISR(TIMER1_COMPA_vect)
 {  
-  Led_4::High(); 
+  //Led_4::High(); 
   generator.calcNewPhase();
   OCR2A = generator.getValueA();
   OCR2B = generator.getValueB();
 
   // ca. 1KHz
   if((count++ & 0x1f) == 0x10) poll = true;
-  Led_4::Low();
+  //Led_4::Low();
 }
 
 
