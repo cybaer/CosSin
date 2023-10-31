@@ -6,6 +6,8 @@
 #include "stateMachine.h"
 #include "generator.h"
 
+static const uint32_t StopFreq = Generator::getFreqSetting(100l);
+
 class SmartGenerator
 {
   static const int8_t RampTime = 5;
@@ -23,7 +25,15 @@ public:
 
   bool onTick()
   {
-    if(m_Frequency == m_TargetFrequency) return m_Frequency == 0;
+    if(m_Frequency == m_TargetFrequency && m_Frequency == StopFreq)
+    {
+      if(m_Stop)
+      {
+        m_Stop = false;
+        generator.Reset();
+      }
+      return true;
+    }
 
     if(m_Frequency != m_TargetFrequency)
     {
@@ -35,6 +45,7 @@ public:
       else
       {
         m_Frequency = m_TargetFrequency;
+        m_Stop = m_Frequency == StopFreq;
       }
       m_ActualData[m_DataIdx].m_FrequencySetting = m_Frequency;
       m_ActualData[m_DataIdx].m_PhaseSetting = m_PhaseSetting;
@@ -43,6 +54,7 @@ public:
     }
     return false;
   }
+
 private:
   int32_t m_FrequencyStep = 0;
   uint32_t m_Frequency = 0;
@@ -51,6 +63,7 @@ private:
 
   GeneratorData m_ActualData[2];
   uint8_t m_DataIdx = 0;
+  bool m_Stop;
 };
 
 class Ui
@@ -61,11 +74,11 @@ public:
   {
     setState(OffState::getInstance());
   }
+
   void doEvents()
   {
     if(m_SmartGenerator.onTick()) Mute::High();
 
-    Led_4::set_value(Mute::is_low());
     Button_1::Read();
     Button_2::Read();
     
@@ -75,26 +88,14 @@ public:
     auto incr = Encoder::Read();
     if(Encoder::clicked()) m_State->onPushEncoder(*this);
     if(incr != 0) m_State->onIncrement(*this, incr);
-
   }
 
-  bool isSetRPM33() { return m_ActualData == &m_Data[RPM_33]; }
-  bool isSetRPM45() { return m_ActualData == &m_Data[RPM_45]; }
+  bool isSetRPM33() { return m_RPM == RPM_33; }
+  bool isSetRPM45() { return m_RPM == RPM_45; }
 
-  void setRPM0() 
-  { 
-    m_SmartGenerator.setFrequency(m_Data[RPM_0]); 
-  }
-  void setRPM33() 
-  { 
-    m_SmartGenerator.setFrequency(m_Data[RPM_33]);
-    //generator.setGeneratorData(m_ActualData); 
-  }
-  void setRPM45() 
-  { 
-    m_SmartGenerator.setFrequency(m_Data[RPM_45]);
-    //generator.setGeneratorData(m_ActualData); 
-  }
+  void setRPM0() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_0]); }
+  void setRPM33() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_33]); }
+  void setRPM45() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_45]); }
 
   void incrRPM(int8_t incr)
   {
@@ -115,10 +116,11 @@ public:
     m_State->onEntry(*this);
   }
 
- 
 private:
   enum RPM {RPM_0 = 0, RPM_33, RPM_45, RPM_Count};
-  GeneratorData m_Data[RPM_Count] = { {0,Degree_90, 0, 0}, 
+  RPM m_RPM = RPM_0;
+  
+  GeneratorData m_Data[RPM_Count] = { {StopFreq,Degree_90, 0, 0}, 
                                     {Generator::getFreqSetting(3703l), Degree_90, 0, 0}, 
                                     {Generator::getFreqSetting(5000l), Degree_90 - 0*OneDegree, 0, 0} };
                                     //{Generator::getFreqSetting((5000l*4500l)/3333l), Degree_90, 0, 0} };

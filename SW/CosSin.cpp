@@ -28,9 +28,7 @@
 #include "HardwareConfig.h"
 #include "ui.h"
 
-
 using namespace avrlib;
-
 
 // __Compiler Bug__
 int __cxa_guard_acquire(__guard *g) {return !*(char *)(g);};
@@ -51,8 +49,6 @@ volatile bool poll = false;
 Generator generator;
 Ui ui; 
 
-
-
 /* Timer1 interrupt calculates the pointer, gets the value
    for the PWM from the table and outputs it */
 ISR(TIMER1_COMPA_vect)
@@ -67,14 +63,10 @@ ISR(TIMER1_COMPA_vect)
   //Led_4::Low();
 }
 
-
 int main(void)
 {
   PIN_PWM_TIMER2A::set_mode(DIGITAL_OUTPUT); 
   PIN_PWM_TIMER2B::set_mode(DIGITAL_OUTPUT); 
-  //PIN_MUTE::set_mode(DIGITAL_OUTPUT);
-  //PIN_MUTE::High(); 
-  //pinMode(PIN_MUTE, OUTPUT);  
   
   cli();         // stop interrupts
   /* Set Timer2 register to FastPWM */
@@ -89,16 +81,13 @@ int main(void)
 
   initHW();
 
-
   while(1)
   {
     if(poll)
     {
+      Led_4::set_value(Mute::value());
       poll = false;
       ui.doEvents();
-      //PIN_MUTE::Toggle();
     }                      
-    
-    //_delay_ms(300);
   }
 }

@@ -20,12 +20,6 @@ struct GeneratorData
 class Generator
 {
 public:
-  void OnTick()  // for ramp up/down
-  {}
-  void xcrementFrequency()
-  {}
-  void xcrementPhase()
-  {}
   void setGeneratorData(GeneratorData* data) 
   { 
     m_Data = data; 
@@ -33,6 +27,10 @@ public:
 
   GeneratorData* getGeneratorData() { return m_Data; }
 
+  void Reset()
+  {
+    m_PhaseAccumulator = 0;
+  }
   
   // --- ISR context --- start
   void calcNewPhase()
@@ -52,17 +50,17 @@ public:
   }
   // --- ISR context end ---
 
-
   static uint32_t getFreqSetting(uint32_t freq_100times) { return freq_100times * get1Hz() / 100l; }
   static uint32_t get1Hz() { return 0xFFFFFFFF / Step; }
   static uint32_t getCentiRPM() { return  get1Hz() / (6000 / 66); }
+
 private:
   uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/Step); //118544 => 1Hz
   uint32_t m_PhaseAccumulator = 0x00000000;
   uint32_t m_PhaseOffsetChB = 0x40000000; // for 90 degrees;
-     
   GeneratorData* m_Data;
 };
+
 extern Generator generator;
 
 #endif

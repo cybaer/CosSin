@@ -7,8 +7,6 @@
       context.setRPM0();
       Led_1::Low();
       Led_2::Low();
-
-      
     }
     void OffState::onPush33(Ui& context) const
     {
@@ -27,10 +25,11 @@
 
     void Run33State::onEntry(Ui& context) const
     {
+      Mute::Low();
       context.setRPM33();
       Led_2::Low();
       Led_1::High();
-      Mute::Low();
+      
     }
     void Run33State::onExit(Ui& context) const
     {
@@ -81,6 +80,7 @@
     {
       context.incrRPM(incr);
     }
+
     void ChangePhaseState::onEntry(Ui& context) const
     {
       Led_4::High();

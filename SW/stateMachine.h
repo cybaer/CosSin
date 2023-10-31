@@ -27,6 +27,7 @@ class InitState: public IState
       return s_instance;
     }
 };  
+
 class OffState: public IState
 {
   public:
@@ -50,7 +51,6 @@ class RunState: public IState
     }
     void onPushEncoder(Ui& context) const;
 };
-
 
 class Run33State: public RunState
 {
@@ -80,7 +80,6 @@ class Run45State: public RunState
     void onPush45(Ui& context) const;
     
 };
-
 
 class ChangeFreqState: public IState
 {
