@@ -6,7 +6,7 @@
 #include "stateMachine.h"
 #include "generator.h"
 
-static const uint32_t StopFreq = Generator::getFreqSetting(100l);
+static const uint32_t StopFreq = Generator::getFreqSetting(20l);
 
 class SmartGenerator
 {
@@ -63,7 +63,7 @@ private:
 
   GeneratorData m_ActualData[2];
   uint8_t m_DataIdx = 0;
-  bool m_Stop;
+  bool m_Stop = true;
 };
 
 class Ui
