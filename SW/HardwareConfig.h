@@ -5,7 +5,6 @@
 #include <avrlib/gpio.h>
 #include <avrlib/devices/rotary_encoder.h>
 
-
 // __Compiler Bug__
 __extension__ typedef int __guard __attribute__((mode (__DI__)));
 
@@ -53,6 +52,5 @@ inline void initHW()
   Button_2::Init();
   Encoder::Init();
 }
-
 
 #endif

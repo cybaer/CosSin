@@ -4,6 +4,7 @@
 
     void OffState::onEntry(Ui& context) const
     {
+      context.readEEPROMData();
       context.setRPM0();
       Led_1::Low();
       Led_2::Low();
@@ -22,7 +23,6 @@
       context.setState(ChangeFreqState::getInstance());
     }
     
-
     void Run33State::onEntry(Ui& context) const
     {
       Mute::Low();
@@ -87,6 +87,7 @@
     }
     void ChangePhaseState::onExit(Ui& context) const
     {
+      context.writeEEPROMData();
       Led_4::Low();
     }
     void ChangePhaseState::onPushEncoder(Ui& context) const

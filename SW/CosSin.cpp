@@ -85,7 +85,7 @@ int main(void)
   {
     if(poll)
     {
-      Led_4::set_value(Mute::value());
+      //Led_4::set_value(Mute::value());
       poll = false;
       ui.doEvents();
     }                      

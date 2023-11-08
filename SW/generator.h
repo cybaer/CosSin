@@ -35,7 +35,7 @@ public:
   // --- ISR context --- start
   void calcNewPhase()
   {
-    m_PhaseAccumulator += m_Data->m_FrequencySetting;// m_PhaseStep;
+    m_PhaseAccumulator += m_Data->m_FrequencySetting;
   }
   uint8_t getValueA()
   {
@@ -44,7 +44,7 @@ public:
   }
   uint8_t getValueB()
   {  
-    uint32_t accuB = m_PhaseAccumulator + m_Data->m_PhaseSetting; //m_PhaseOffsetChB;
+    uint32_t accuB = m_PhaseAccumulator + m_Data->m_PhaseSetting; 
     uint8_t address_pointer = accuB >> AddressShift;
     return pgm_read_byte(&SINE_256V_8B[address_pointer]);
   }
@@ -52,7 +52,7 @@ public:
 
   static uint32_t getFreqSetting(uint32_t freq_100times) { return freq_100times * get1Hz() / 100l; }
   static uint32_t get1Hz() { return 0xFFFFFFFF / Step; }
-  static uint32_t getCentiRPM() { return  get1Hz() / (6000 / 66); }
+  static uint32_t getCentiRPM() { return  get1Hz() / 90;} //  1 / (50Hz * 0,01RPM / 45RPM) = 90
 
 private:
   uint32_t m_PhaseStep = 50l * (0xFFFFFFFF/Step); //118544 => 1Hz

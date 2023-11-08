@@ -2,9 +2,15 @@
 #ifndef UI_H_
 #define UI_H_
 
+#include <avr/eeprom.h>
 #include "HardwareConfig.h"
 #include "stateMachine.h"
 #include "generator.h"
+
+struct CosSinData
+{
+  GeneratorData Data[3];
+};      
 
 static const uint32_t StopFreq = Generator::getFreqSetting(20l);
 
@@ -14,13 +20,21 @@ class SmartGenerator
   static const int16_t TicksPerSecond = 36231 / 32;
   static const int16_t Steps = RampTime * TicksPerSecond; 
 public:
-  void setFrequency(GeneratorData& data)
+  void setFrequency(GeneratorData* data)
   {
-    m_TargetFrequency = data.m_FrequencySetting;
-    m_PhaseSetting = data.m_PhaseSetting;
-    
+    m_TargetFrequency = data->m_FrequencySetting;
+    m_PhaseSetting = data->m_PhaseSetting;
+
+    const int32_t deltaF = int32_t(m_TargetFrequency - m_Frequency);
+    if(abs(deltaF) < generator.get1Hz())
+    {
+      m_FrequencyStep = deltaF;
+    }
+    else
+    {    
+      m_FrequencyStep = int32_t(m_TargetFrequency - m_Frequency) / Steps;
+    }
     m_Frequency = generator.getGeneratorData()->m_FrequencySetting;
-    m_FrequencyStep = int32_t(m_TargetFrequency - m_Frequency) / Steps;
   }
 
   bool onTick()
@@ -69,45 +83,33 @@ private:
 class Ui
 {
 public:
-  Ui()
-  : m_State(&InitState::getInstance())
-  {
-    setState(OffState::getInstance());
-  }
+  Ui();
 
-  void doEvents()
-  {
-    if(m_SmartGenerator.onTick()) Mute::High();
+  void readEEPROMData();
+  void writeEEPROMData();
 
-    Button_1::Read();
-    Button_2::Read();
-    
-    if(Button_1::lowered()) m_State->onPush33(*this);
-    if(Button_2::lowered())  m_State->onPush45(*this);
-    
-    auto incr = Encoder::Read();
-    if(Encoder::clicked()) m_State->onPushEncoder(*this);
-    if(incr != 0) m_State->onIncrement(*this, incr);
-  }
+  void doEvents();
 
   bool isSetRPM33() { return m_RPM == RPM_33; }
   bool isSetRPM45() { return m_RPM == RPM_45; }
 
-  void setRPM0() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_0]); }
-  void setRPM33() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_33]); }
-  void setRPM45() { m_SmartGenerator.setFrequency(m_Data[m_RPM = RPM_45]); }
+  void setRPM0() { m_SmartGenerator.setFrequency(&m_Data[m_RPM = RPM_0]); }
+  void setRPM33() { m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_33]); }
+  void setRPM45() { m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_45]); }
 
   void incrRPM(int8_t incr)
   {
     uint32_t f = m_ActualData->m_FrequencySetting;
     f += incr * Generator::getCentiRPM();
     m_ActualData->m_FrequencySetting = f;
+    m_SmartGenerator.setFrequency(m_ActualData);
   }
   void incrPhase(int8_t incr)
   {
     uint32_t Ph = m_ActualData->m_PhaseSetting;
     Ph += incr * OneDegree;
     m_ActualData->m_PhaseSetting = Ph;
+    m_SmartGenerator.setFrequency(m_ActualData);
   }
   void setState(IState& state)
   {
@@ -123,7 +125,7 @@ private:
   GeneratorData m_Data[RPM_Count] = { {StopFreq,Degree_90, 0, 0}, 
                                     {Generator::getFreqSetting(3703l), Degree_90, 0, 0}, 
                                     {Generator::getFreqSetting(5000l), Degree_90 - 0*OneDegree, 0, 0} };
-                                    //{Generator::getFreqSetting((5000l*4500l)/3333l), Degree_90, 0, 0} };
+
   GeneratorData* m_ActualData = &m_Data[0];
   IState* m_State; 
 
@@ -131,5 +133,4 @@ private:
 };
 
 extern Ui ui;
-
 #endif
