@@ -26,6 +26,7 @@ class InitState: public IState
       static InitState s_instance;
       return s_instance;
     }
+    void onExit(Ui& context) const;
 };  
 
 class OffState: public IState
@@ -61,7 +62,6 @@ class Run33State: public RunState
       return s_instance;
     }
     void onEntry(Ui& context) const;
-    void onExit(Ui& context) const;
     void onPush33(Ui& context) const;
     void onPush45(Ui& context) const;
 };
@@ -75,10 +75,8 @@ class Run45State: public RunState
       return s_instance;
     }
     void onEntry(Ui& context) const;
-    void onExit(Ui& context) const;
     void onPush33(Ui& context) const;
     void onPush45(Ui& context) const;
-    
 };
 
 class ChangeFreqState: public IState

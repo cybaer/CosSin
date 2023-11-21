@@ -25,6 +25,8 @@ public:
     m_TargetFrequency = data->m_FrequencySetting;
     m_PhaseSetting = data->m_PhaseSetting;
 
+    m_Frequency = generator.getGeneratorData()->m_FrequencySetting;
+    
     const int32_t deltaF = int32_t(m_TargetFrequency - m_Frequency);
     if(abs(deltaF) < generator.get1Hz())
     {
@@ -34,7 +36,6 @@ public:
     {    
       m_FrequencyStep = int32_t(m_TargetFrequency - m_Frequency) / Steps;
     }
-    m_Frequency = generator.getGeneratorData()->m_FrequencySetting;
   }
 
   bool onTick()
@@ -73,7 +74,7 @@ private:
   int32_t m_FrequencyStep = 0;
   uint32_t m_Frequency = 0;
   uint32_t m_PhaseSetting = 0;
-  uint32_t m_TargetFrequency;
+  uint32_t m_TargetFrequency = StopFreq;
 
   GeneratorData m_ActualData[2];
   uint8_t m_DataIdx = 0;
@@ -85,6 +86,10 @@ class Ui
 public:
   Ui();
 
+  void initGenerator()
+  {
+    generator.setGeneratorData(&m_Data[RPM_0]);
+  }
   void readEEPROMData();
   void writeEEPROMData();
 

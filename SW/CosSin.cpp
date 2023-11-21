@@ -81,6 +81,8 @@ int main(void)
 
   initHW();
 
+  _delay_ms(100);
+
   while(1)
   {
     if(poll)
