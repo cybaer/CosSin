@@ -37,4 +37,10 @@ CosSinData m_RPMData;
     auto incr = Encoder::Read();
     if(Encoder::clicked()) m_State->onPushEncoder(*this);
     if(incr != 0) m_State->onIncrement(*this, incr);
+
+    if(m_StopCounter > 0) 
+    {
+      m_StopCounter--;
+      if(m_StopCounter == 0) m_State->onStopCounter(*this);
+    }
   }

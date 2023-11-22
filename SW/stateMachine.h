@@ -12,6 +12,7 @@ class IState
     virtual void onPush33(Ui&) const {}
     virtual void onPush45(Ui&) const {}
     virtual void onPushEncoder(Ui&) const {}
+    virtual void onStopCounter(Ui&) const {}
     virtual void onIncrement(Ui&, int8_t incr) const {}
 };
 
@@ -51,6 +52,7 @@ class RunState: public IState
       return s_instance;
     }
     void onPushEncoder(Ui& context) const;
+    void onStopCounter(Ui& context) const;
 };
 
 class Run33State: public RunState

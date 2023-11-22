@@ -87,9 +87,10 @@ int main(void)
   {
     if(poll)
     {
-      //Led_4::set_value(Mute::value());
+      Led_4::High();
       poll = false;
       ui.doEvents();
+      Led_4::Low();
     }                      
   }
 }

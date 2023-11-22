@@ -13,6 +13,8 @@ struct CosSinData
 };      
 
 static const uint32_t StopFreq = Generator::getFreqSetting(20l);
+static const uint32_t StopCount_33 = 1132UL * 60UL * 25UL;
+static const uint32_t StopCount_45 = 1132UL * 60UL * 15UL;
 
 class SmartGenerator
 {
@@ -99,8 +101,16 @@ public:
   bool isSetRPM45() { return m_RPM == RPM_45; }
 
   void setRPM0() { m_SmartGenerator.setFrequency(&m_Data[m_RPM = RPM_0]); }
-  void setRPM33() { m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_33]); }
-  void setRPM45() { m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_45]); }
+  void setRPM33() 
+  {
+    m_StopCounter = StopCount_33; 
+    m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_33]); 
+  }
+  void setRPM45() 
+  { 
+    m_StopCounter = StopCount_45;
+    m_SmartGenerator.setFrequency(m_ActualData = &m_Data[m_RPM = RPM_45]); 
+  }
 
   void incrRPM(int8_t incr)
   {
@@ -135,6 +145,8 @@ private:
   IState* m_State; 
 
   SmartGenerator m_SmartGenerator;
+
+  uint32_t m_StopCounter = 0;
 };
 
 extern Ui ui;

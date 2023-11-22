@@ -29,6 +29,10 @@ void RunState::onPushEncoder(Ui& context) const
 {
   context.setState(ChangeFreqState::getInstance());
 }
+void RunState::onStopCounter(Ui& context) const
+{
+  context.setState(OffState::getInstance());
+}
 
 void Run33State::onEntry(Ui& context) const
 {
