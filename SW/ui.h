@@ -21,6 +21,7 @@ class SmartGenerator
   static const int8_t RampTime = 5;
   static const int16_t TicksPerSecond = 36231 / 32;
   static const int16_t Steps = RampTime * TicksPerSecond; 
+
 public:
   void setFrequency(GeneratorData* data)
   {
@@ -95,6 +96,9 @@ public:
   void readEEPROMData();
   void writeEEPROMData();
 
+  void readEEPROMStopp();
+  void writeEEPROMStopp();
+
   void doEvents();
 
   bool isSetRPM33() { return m_RPM == RPM_33; }
@@ -132,6 +136,9 @@ public:
     m_State = &state;
     m_State->onEntry(*this);
   }
+ 
+  bool toggleAutoStop() { return m_AutoStop = !m_AutoStop; }
+  bool getAutoStop() { return m_AutoStop; }
 
 private:
   enum RPM {RPM_0 = 0, RPM_33, RPM_45, RPM_Count};
@@ -145,7 +152,7 @@ private:
   IState* m_State; 
 
   SmartGenerator m_SmartGenerator;
-
+  bool m_AutoStop = false;
   uint32_t m_StopCounter = 0;
 };
 

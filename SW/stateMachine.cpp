@@ -5,6 +5,7 @@
 void InitState::onExit(Ui& context) const
 {
   context.readEEPROMData();
+  context.readEEPROMStopp();
   context.initGenerator();
   Led_1::Low();
   Led_2::Low();
@@ -23,6 +24,10 @@ void OffState::onPush33(Ui& context) const
 void OffState::onPush45(Ui& context) const
 {
   context.setState(Run45State::getInstance());
+}
+void OffState::onPushEncoder(Ui& context) const
+{
+  context.setState(EditStopState::getInstance());
 }
 
 void RunState::onPushEncoder(Ui& context) const
@@ -102,5 +107,25 @@ void ChangePhaseState::onPushEncoder(Ui& context) const
 void ChangePhaseState::onIncrement(Ui& context, int8_t incr) const
 {
   context.incrPhase(incr);
+}
+
+void EditStopState::onEntry(Ui& context) const
+{
+  Led_1::High();
+  Led_2::set_value(context.getAutoStop());
+}
+void EditStopState::onExit(Ui& context) const
+{
+  context.writeEEPROMStopp();
+  Led_1::Low();
+  Led_2::Low();
+}
+void EditStopState::onPushEncoder(Ui& context) const
+{
+  context.setState(OffState::getInstance());
+}
+void EditStopState::onIncrement(Ui& context, int8_t incr) const
+{
+  Led_2::set_value(context.toggleAutoStop());
 }
  

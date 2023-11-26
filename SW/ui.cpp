@@ -6,7 +6,10 @@
 #include "ui.h"
 
 CosSinData EEMEM eeData;
-CosSinData m_RPMData; 
+CosSinData m_RPMData;
+
+bool EEMEM eeAutoStop;
+
 
   Ui::Ui()
   : m_State(&InitState::getInstance())
@@ -24,6 +27,15 @@ CosSinData m_RPMData;
     eeprom_write_block(m_Data, &eeData, sizeof(GeneratorData) * RPM_Count);
   }
 
+  void Ui::readEEPROMStopp()
+  {
+    eeprom_read_block(&m_AutoStop, &eeAutoStop, sizeof(m_AutoStop));
+  }
+  void Ui::writeEEPROMStopp()
+  {
+    eeprom_write_block(&m_AutoStop, &eeAutoStop, sizeof(m_AutoStop));
+  }
+
   void Ui::doEvents()
   {
     if(m_SmartGenerator.onTick()) Mute::High();
@@ -38,7 +50,7 @@ CosSinData m_RPMData;
     if(Encoder::clicked()) m_State->onPushEncoder(*this);
     if(incr != 0) m_State->onIncrement(*this, incr);
 
-    if(m_StopCounter > 0) 
+    if(m_AutoStop && m_StopCounter > 0) 
     {
       m_StopCounter--;
       if(m_StopCounter == 0) m_State->onStopCounter(*this);

@@ -16,9 +16,9 @@ class IState
     virtual void onIncrement(Ui&, int8_t incr) const {}
 };
 
-  /**
-   * State machine
-   */
+/**
+ * State machine
+ */
 class InitState: public IState
 {
   public:
@@ -41,6 +41,7 @@ class OffState: public IState
     void onEntry(Ui& context) const;
     void onPush33(Ui& context) const;
     void onPush45(Ui& context) const;
+    void onPushEncoder(Ui& context) const;
 };
 
 class RunState: public IState
@@ -109,4 +110,17 @@ class ChangePhaseState: public IState
     void onIncrement(Ui& context, int8_t incr) const;
 };
 
+class EditStopState: public IState
+{
+  public:
+    static EditStopState& getInstance(void)
+    {
+      static EditStopState s_instance;
+      return s_instance;
+    }
+    void onEntry(Ui& context) const;
+    void onExit(Ui& context) const;
+    void onPushEncoder(Ui& context) const;
+    void onIncrement(Ui& context, int8_t incr) const;
+};
 #endif

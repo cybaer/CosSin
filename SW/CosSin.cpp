@@ -75,7 +75,7 @@ int main(void)
   /* Set Timer1 for Timer interrupt */
   TCCR1A = 0;  
   TCCR1B = 0x0A; // turn on CTC mode prescaler = 2
-  OCR1A = 68;   // f = 2,5MHz / (OCCR1A + 1) = 36231Hz
+  OCR1A = 68;    // f = 2,5MHz / (OCCR1A + 1) = 36231Hz
   TIMSK1 = 0x02; // enable timer compare interrupt
   sei();         //allow interrupts
 
@@ -87,10 +87,8 @@ int main(void)
   {
     if(poll)
     {
-      Led_4::High();
       poll = false;
       ui.doEvents();
-      Led_4::Low();
     }                      
   }
 }
